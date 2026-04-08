@@ -1,0 +1,25 @@
+---
+description: "Protected files that should not be modified"
+alwaysApply: true
+---
+
+# Protected Files
+
+NEVER modify these files without explicit approval:
+
+- `packages/excalidraw/scene/Renderer.ts` — scene render pipeline
+- `packages/excalidraw/data/restore.ts` — file format compatibility
+- `packages/excalidraw/actions/manager.tsx` — action dispatch system (`ActionManager`)
+- `packages/excalidraw/types.ts` — core app type definitions
+
+Changes to protected files require:
+
+1. Full understanding of dependencies
+2. Running complete test suite
+3. Manual QA verification
+
+## How to verify
+
+1. **Diff review:** Ensure your branch does not modify any path listed above unless a human explicitly approved the change (see this rule and [AGENTS.md](../../AGENTS.md)).
+2. **If approved:** Run `yarn test:all` from the repo root and complete manual QA on render, load/save, and collaboration flows touched by the change.
+3. **Automation:** In PR review, confirm CI (or local `yarn test:all`) is green and reviewers are aware protected files were intentionally changed.

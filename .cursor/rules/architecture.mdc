@@ -1,0 +1,30 @@
+---
+description: "Architecture constraints for the project"
+globs: packages/**
+alwaysApply: false
+---
+
+# Project Architecture
+
+## State Management
+
+- Custom state via actionManager — NOT Redux/Zustand/MobX
+- State updates: actionManager.executeAction() ONLY
+- State type: AppState (packages/excalidraw/types.ts)
+
+## Rendering
+
+- Canvas 2D rendering — NOT React DOM for drawing
+- Render pipeline: Scene → renderScene() → canvas context
+- DO NOT use react-konva, fabric.js, pixi.js
+
+## Dependencies
+
+- No new npm packages without explicit approval
+- Check packages/utils/ before adding external helpers
+
+## How to verify
+
+1. **Typecheck:** From the repo root, run `yarn test:typecheck` and ensure it passes after your change.
+2. **Layering:** Confirm new imports respect the package graph in [ONBOARDING.md](../../ONBOARDING.md) (lower packages do not import higher ones). Search for forbidden cross-package imports if you touched `packages/*`.
+3. **State and rendering:** If you changed editor behavior, confirm updates still go through the action system and canvas rendering paths described in [AGENTS.md](../../AGENTS.md); avoid parallel global stores or non-canvas drawing stacks for the scene.

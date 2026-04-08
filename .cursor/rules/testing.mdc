@@ -1,0 +1,29 @@
+---
+description: "How to write and run tests — apply when adding or editing tests, test utils, or QA-related scripts"
+globs: "**/*.test.ts,**/*.test.tsx,**/tests/**/*.ts,**/tests/**/*.tsx,**/__tests__/**/*.ts,vitest.config.mts,setupTests.ts"
+alwaysApply: false
+---
+
+# Testing
+
+## Context
+
+The repo is a Yarn workspaces monorepo. Automated checks use **Vitest** (jsdom, global test APIs, `setupTests.ts` with `vitest-canvas-mock`). Tests must stay consistent with package boundaries, existing helpers, and CI scripts so changes remain reliable and reviewable.
+
+## Rule
+
+- **Runner and APIs**: Use **Vitest** only (`describe` / `it` / `expect`, `vi` for mocks). Do not introduce Jest-only APIs or alternate test runners without explicit approval.
+- **Placement**: Prefer **colocated** tests (`ComponentName.test.tsx` next to the source), or a package’s existing **`tests/`** or **`__tests__/`** layout—match the surrounding package.
+- **`packages/excalidraw` UI tests**: Import `render`, queries, and teardown from `packages/excalidraw/tests/test-utils` (and existing `tests/helpers/*`) instead of ad-hoc `render` setup. Use patterns already used in `packages/excalidraw/tests/*.test.tsx` (e.g. `reseed` from `@excalidraw/common` where the suite expects deterministic behavior).
+- **Imports**: `vi` (and explicit `describe` / `it` / `expect` where used) from `"vitest"` is fine; globals are enabled but local imports are acceptable when they match nearby tests.
+- **Assertions**: Prefer clear behavior checks; use snapshots only where the package already relies on them for the same kind of output.
+- **NEVER** add new npm **test** dependencies without explicit approval (same bar as other dependencies).
+- **DO NOT** bypass architecture rules in tests (e.g. inventing parallel state paths that contradict `architecture.mdc`); tests should reflect how the app is meant to work.
+- **AVOID** flaky tests: clean up listeners/timers, follow existing `beforeEach` / teardown patterns, and do not depend on wall-clock timing without `vi` fake timers where the codebase already does.
+- **TypeScript**: Align with `conventions.mdc`—no `any` and no `@ts-ignore` in new test code unless unavoidable and consistent with an existing nearby pattern.
+
+## How to verify
+
+1. From the repo root, run **`yarn test`** (or **`yarn test:app -- path/to/file.test.tsx`** for a focused run).
+2. Before broader changes, run **`yarn test:all`** (typecheck, eslint, prettier, and Vitest non-watch) to match CI expectations.
+3. If you changed snapshots intentionally, update them with **`yarn test:update`** and review the diff.

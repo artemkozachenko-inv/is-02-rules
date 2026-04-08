@@ -1,0 +1,31 @@
+---
+description: "excalidraw.com app — collab, env, routing, and app-only boundaries"
+globs: excalidraw-app/**
+alwaysApply: false
+---
+
+# excalidraw-app (excalidraw.com)
+
+## Scope
+
+This rule applies when editing files under `excalidraw-app/`. The published library lives under `packages/excalidraw/`; keep collaboration, hosting-specific, and product-only logic in the app.
+
+## Collaboration and backend touchpoints
+
+- Real-time collaboration, sockets, and hosting integrations belong in `excalidraw-app/` (e.g. `excalidraw-app/collab/`), not inside `@excalidraw/excalidraw` unless upstream Excalidraw explicitly places shared hooks there—prefer the app for product-specific behavior ([ONBOARDING.md](../../ONBOARDING.md)).
+- Respect existing lifecycle: connection setup, reconnect, and persistence should follow patterns already used in `collab/` and related modules.
+
+## Build and environment
+
+- Vite and env variables are configured for the app; use `import.meta.env` consistently with `excalidraw-app/vite.config.mts` and ONBOARDING “Getting Started” env notes.
+- Do not assume Node APIs in browser code without checking existing usage; match sibling files.
+
+## Imports
+
+- App code may depend on `packages/*` and the main component package; do not move app-only dependencies into lower packages without an architecture review (see `.cursor/rules/architecture.mdc`).
+
+## How to verify
+
+1. **Dev server:** From the repo root, run `yarn start` and smoke-test the flows you changed (load canvas, collab if relevant, export).
+2. **Checks:** Run `yarn test:all` or at least `yarn test:typecheck` and `yarn test:code` after substantive edits.
+3. **Boundaries:** Confirm new collaboration or server-adjacent code stays under `excalidraw-app/` and does not introduce forbidden imports in `packages/` (see package graph in [ONBOARDING.md](../../ONBOARDING.md)).

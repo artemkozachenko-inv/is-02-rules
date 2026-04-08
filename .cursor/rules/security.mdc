@@ -1,0 +1,33 @@
+---
+description: "Security expectations for secrets, env, user content, and dependencies"
+alwaysApply: true
+---
+
+# Security
+
+## Secrets and configuration
+
+- Never commit secrets, session tokens, API keys, or private URLs. Use environment variables and local-only files (e.g. `.env.development.local`) as documented in [ONBOARDING.md](../../ONBOARDING.md) and `excalidraw-app/vite.config.mts`.
+- Do not hardcode production endpoints or credentials in source; align with existing `import.meta.env` / app patterns.
+- Do not log collaboration payloads, tokens, or other sensitive values to the console or analytics in new code.
+
+## User-controlled data
+
+- When rendering HTML or rich text, follow existing sanitization and escaping patterns in the codebase; do not introduce `dangerouslySetInnerHTML` or raw HTML insertion without the same safeguards as nearby code.
+- Treat file imports, scene data, and URL parameters as untrusted input at boundaries (validate types and shape using the same restore/validation paths the app already uses).
+
+## Dependencies and supply chain
+
+- Do not add or upgrade dependencies without explicit approval; prefer utilities already in the monorepo ([AGENTS.md](../../AGENTS.md), `packages/utils/`).
+- Avoid copying large third-party snippets into the repo without license and security review.
+
+## Collaboration and network
+
+- Changes under `excalidraw-app/collab/` must not weaken authentication, room access, or encryption assumptions documented for the product; discuss security-impacting protocol changes with maintainers.
+
+## How to verify
+
+1. **Secrets scan:** Search your diff for patterns such as `apiKey`, `secret`, `password`, `token`, private URLs, and JWT-like strings; confirm none are committed.
+2. **Env usage:** Grep for new `process.env` / `import.meta.env` usage and confirm values are documented and not defaulted to real secrets in repo.
+3. **Dependencies:** If you changed `package.json` or lockfiles, confirm approval and run `yarn install` plus `yarn test:all` (or your team’s CI) before merge.
+4. **Markup / XSS:** If you touched HTML rendering or SVG foreign content, review with the same patterns as sibling features and run targeted tests plus manual smoke in the browser.
