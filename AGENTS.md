@@ -51,6 +51,18 @@ Yarn workspaces monorepo for **Excalidraw**: the publishable React library `@exc
 
 **Dependency rule:** lower-level packages never import higher-level ones (`common` → `math` → `element` → `excalidraw` → app).
 
+## Tech stack
+
+| Technology | Role | Where it appears in this guide |
+| --- | --- | --- |
+| **React** | UI library for the editor and app | [What this repo is](#what-this-repo-is), [Architecture](#architecture-do-not-fight-it), [Code conventions](#code-conventions-packages) |
+| **TypeScript** | Strict typing across all packages | [Code conventions](#code-conventions-packages) (`strict`; avoid `any`) |
+| **Vite** | Dev server and app bundler | [Commands](#commands-repo-root) (`yarn start`), env config in `excalidraw-app/vite.config.mts` |
+| **Yarn workspaces** | Monorepo package manager | [What this repo is](#what-this-repo-is), [Commands](#commands-repo-root) (`yarn install`) |
+| **Vitest** | Test runner (only permitted runner) | [Commands](#commands-repo-root) (`yarn test`), [Testing](#testing) |
+
+See [ONBOARDING.md](./ONBOARDING.md) for in-depth context on each technology's role in the product.
+
 ## Commands (repo root)
 
 From `package.json` and ONBOARDING §4, §12:
