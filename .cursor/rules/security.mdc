@@ -15,6 +15,9 @@ alwaysApply: true
 
 - When rendering HTML or rich text, follow existing sanitization and escaping patterns in the codebase; do not introduce `dangerouslySetInnerHTML` or raw HTML insertion without the same safeguards as nearby code.
 - Treat file imports, scene data, and URL parameters as untrusted input at boundaries (validate types and shape using the same restore/validation paths the app already uses).
+- Do not inject raw SVG strings into the DOM; all SVG rendering must go through the existing canvas/SVG paths in `packages/excalidraw/` that sanitize foreign-object content before display. Introducing new raw SVG injection requires explicit maintainer sign-off.
+- When importing `.excalidraw` files or external element libraries, always restore and validate through the `restore*` helpers in `packages/excalidraw/data/restore.ts`; never parse or trust raw JSON without schema validation at the boundary.
+- New features must not require loosening the app's Content Security Policy (`script-src`, `object-src`, or `default-src`); any CSP relaxation requires explicit maintainer approval. Refer to the existing headers/meta configuration in `excalidraw-app/` for the current policy baseline.
 
 ## Dependencies and supply chain
 
@@ -24,6 +27,8 @@ alwaysApply: true
 ## Collaboration and network
 
 - Changes under `excalidraw-app/collab/` must not weaken authentication, room access, or encryption assumptions documented for the product; discuss security-impacting protocol changes with maintainers.
+- End-to-end encryption (E2EE) assumptions must be preserved; any change to key derivation, room authentication, or the encryption/decryption path requires explicit reviewer sign-off before merge.
+- Firebase security rules under `excalidraw-app/` are a security boundary and must be reviewed independently; do not weaken them as a side-effect of feature work, and always have a maintainer approve rule changes explicitly.
 
 ## How to verify
 

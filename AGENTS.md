@@ -42,7 +42,7 @@ Repeatable prompts are in [`.cursor/commands/`](./.cursor/commands/) (Markdown).
 | [ONBOARDING.md](./ONBOARDING.md) | Monorepo layout, packages, architecture, state, rendering, collab, persistence, workflows, glossary |
 | [CONTRIBUTING.md](./CONTRIBUTING.md) | Contribution entry point (links to official docs) |
 | [README.md](./README.md) | Product overview and quick links |
-| [.github/copilot-instructions.md](./.github/copilot-instructions.md) | TypeScript/React performance and style expectations |
+| [.github/copilot-instructions.md](./.github/copilot-instructions.md) | GitHub Copilot instructions for TypeScript/React performance and style expectations |
 | [.cursor/rules/](./.cursor/rules/) | Project-specific constraints (see rules index above) |
 
 ## What this repo is
